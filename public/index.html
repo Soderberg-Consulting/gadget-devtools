@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Developer Tools Gadget</title> 
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<style type="text/css">
+		body {
+			padding: 10px;
+			background-color: transparent;
+		} 
+		.btn-full-width { width: 100%; }
+		a { color: #2196F3; }
+		a:hover { color: #337ab7; }
+		code {
+			background-color: #ccc;
+			color: #333;
+			border-radius: 2px;
+			padding: 6px;
+		}
+		.error {
+			color: white;
+			padding: 24px;		
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: rgba(0,0,0,0.8);
+			margin: 0;
+		}
+		#direct-load {
+			font-size: 2em;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="main">
+		<button id="minify" type="button" class="btn btn-success btn-full-width">Minify</button>
+		<button id="sass" type="button" class="btn btn-success btn-full-width hidden">Publish compiled CSS</button>
+		<button id="less" type="button" class="btn btn-success btn-full-width hidden">Publish compiled CSS</button>
+		<p id="direct-load" class="error hidden">It looks like you're trying to access this gadget directly. To use this gadget, you must install it in your OU Campus account. Please use the <a href="http://support.omniupdate.com/oucampus10/setup/gadgets/new-gadget.html" target="_blank">official OU Campus instructions</a> to install this gadget. When asked for the gadget URL, please enter <code>https://devtools.gadget.host/</code></p>
+	</div>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+	<script type="text/javascript" src="/javascripts/gadgetlib.min.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			if (top === self) {
+				$('#direct-load').removeClass('hidden');
+				return;	
+			}
+
+			const DEVTOOLSHOST = 'https://devtools.gadget.host';
+			function reverse(str) {
+				if (typeof str !== 'string')
+					return '';
+				return str.split('').reverse().join('');
+			}
+			function getExtension(str) {
+				if (typeof str !== 'string')
+					return '';
+
+				var dotPos = reverse(str).indexOf('.');
+				if (dotPos > 0) {
+					return str.substr(-dotPos);
+				} else {
+					return '';
+				}
+			}
+			gadget.ready().then(gadget.fetch).then(function () {
+				const apiHost = gadget.get('apihost');
+				const authToken = gadget.get('token');
+				var fileType;
+				var stagingPath;
+				var fileName;
+				var minFileName;
+				var minFilePath;
+
+				// TODO: consolidate the following click handlers into a single button/handler
+				$('#minify').click(function(e){
+					var data = {
+						"authorization_token" : authToken,
+						"site" : gadget.get('site'),
+						"path" : stagingPath
+					};
+					$.get(apiHost + '/files/source', data).done(function(results){
+						if (results !== null) {
+							$.ajax({
+								method: 'POST',
+								contentType: false,
+								url: DEVTOOLSHOST + '/uglify/' + (fileType === 'css' ? 'css' : 'js'),
+								data: results.source,
+								dataType: "text"
+							}).done(function(minified){
+								var folderPath = minFilePath.substr(0,minFilePath.length - minFileName.length - 1);
+								var fd = new FormData();
+								var file = new File([minified], minFileName);
+								fd.append(minFileName, file);
+								$.ajax({
+									method: 'POST',
+									contentType: false,
+									processData: false,
+									url: apiHost + '/files/upload?site='+gadget.get('site')+'&path='+folderPath+'&overwrite=true&target='+gadget.get('site') + '&authorization_token=' + gadget.get('token'),
+									data: fd
+								}).done(function(results){
+									$('#minify')[0].innerText = 'Success!';
+									$('#minify').prop('disabled', true);
+									window.setTimeout(function(){
+										$('#minify')[0].innerText = 'Publish ' + minFileName;
+										$('#minify').prop('disabled', false);
+									},5000);
+								}).fail(function(error){
+									console.log('Error uploading minified file to production:', error);
+									$('#minify')[0].innerText = 'Error!';
+									$('#minify').prop('disabled', true);
+									$('#minify').removeClass('btn-success').addClass('btn-danger');		
+								});
+							}).fail(function(error){ console.log(error); });
+						}
+					}).fail(function(error){ console.log(error); });
+				});
+
+				$('#sass').click(function(e){
+					var data = {
+						"authorization_token" : authToken,
+						"site" : gadget.get('site'),
+						"path" : stagingPath
+					};
+					$.get(apiHost + '/files/source', data).done(function(results){
+						if (results !== null) {
+							$.ajax({
+								method: 'POST',
+								contentType: false,
+								url: DEVTOOLSHOST + '/sass',
+								data: results.source,
+								dataType: "text"
+							}).done(function(sassed){
+								var folderPath = minFilePath.substr(0,minFilePath.length - minFileName.length - 1);
+								var fd = new FormData();
+								var file = new File([sassed], minFileName);
+								fd.append(minFileName, file);
+								$.ajax({
+									method: 'POST',
+									contentType: false,
+									processData: false,
+									url: apiHost + '/files/upload?site='+gadget.get('site')+'&path='+folderPath+'&overwrite=true&target='+gadget.get('site') + '&authorization_token=' + gadget.get('token'),
+									data: fd
+								}).done(function(results){
+									$('#sass')[0].innerText = 'Success!';
+									$('#sass').prop('disabled', true);
+									window.setTimeout(function(){
+										$('#sass')[0].innerText = 'Publish ' + minFileName;
+										$('#sass').prop('disabled', false);
+									},5000);
+								}).fail(function(error){
+									console.log('Error uploading compiled css file to production:', error);
+									$('#sass')[0].innerText = 'Error!';
+									$('#sass').prop('disabled', true);
+									$('#sass').removeClass('btn-success').addClass('btn-danger');		
+								});
+							}).fail(function(error){ console.log(error); });
+						}
+					}).fail(function(error){ console.log(error); });
+				});
+
+				$('#less').click(function(e){
+					var data = {
+						"authorization_token" : authToken,
+						"site" : gadget.get('site'),
+						"path" : stagingPath
+					};
+					$.get(apiHost + '/files/source', data).done(function(results){
+						if (results !== null) {
+							$.ajax({
+								method: 'POST',
+								contentType: false,
+								url: DEVTOOLSHOST + '/less',
+								data: results.source,
+								dataType: "text"
+							}).done(function(sassed){
+								var folderPath = minFilePath.substr(0,minFilePath.length - minFileName.length - 1);
+								var fd = new FormData();
+								var file = new File([sassed], minFileName);
+								fd.append(minFileName, file);
+								$.ajax({
+									method: 'POST',
+									contentType: false,
+									processData: false,
+									url: apiHost + '/files/upload?site='+gadget.get('site')+'&path='+folderPath+'&overwrite=true&target='+gadget.get('site') + '&authorization_token=' + gadget.get('token'),
+									data: fd
+								}).done(function(results){
+									$('#less')[0].innerText = 'Success!';
+									$('#less').prop('disabled', true);
+									window.setTimeout(function(){
+										$('#less')[0].innerText = 'Publish ' + minFileName;
+										$('#less').prop('disabled', false);
+									},5000);
+								}).fail(function(error){
+									console.log('Error uploading compiled css file to production:', error);
+									$('#less')[0].innerText = 'Error!';
+									$('#less').prop('disabled', true);
+									$('#less').removeClass('btn-success').addClass('btn-danger');		
+								});
+							}).fail(function(error){ console.log(error); });
+						}
+					}).fail(function(error){ console.log(error); });
+				});
+
+				function updateMinifyButton(){
+					gadget.oucGetCurrentFileInfo().then(function(fileInfo) {
+						stagingPath = fileInfo.stagingPath;
+						fileName = fileInfo.filename;
+						var extension = getExtension(stagingPath);
+						switch (extension) {
+							case 'css':
+							fileType = 'css';
+							minFileName = fileName.substr(0,fileName.length-3) + 'min.css';
+							minFilePath = stagingPath.substr(0,stagingPath.length-3) + 'min.css';
+							$('#sass').addClass('hidden');	
+							$('#less').addClass('hidden');	
+							$('#minify')[0].innerText = 'Publish ' + minFileName;
+							$('#minify').removeClass('btn-danger hidden').addClass('btn-success');		
+							$('#minify').prop('disabled',false);
+							break;
+							case 'js':
+							fileType = 'js';
+							minFileName = fileName.substr(0,fileName.length-2) + 'min.js';
+							minFilePath = stagingPath.substr(0,stagingPath.length-2) + 'min.js';
+							$('#sass').addClass('hidden');	
+							$('#less').addClass('hidden');	
+							$('#minify')[0].innerText = 'Publish ' + minFileName;
+							$('#minify').removeClass('btn-danger hidden').addClass('btn-success');		
+							$('#minify').prop('disabled',false);
+							break;
+							case 'scss':
+							minFileName = fileName.substr(0,fileName.length-4) + 'css';
+							minFilePath = stagingPath.substr(0,stagingPath.length-4) + 'css';
+							$('#minify').addClass('hidden');	
+							$('#less').addClass('hidden');	
+							$('#sass')[0].innerText = 'Publish ' + minFileName;
+							$('#sass').removeClass('btn-danger hidden').addClass('btn-success');		
+							$('#sass').prop('disabled',false);
+							break;
+							case 'less':
+							minFileName = fileName.substr(0,fileName.length-4) + 'css';
+							minFilePath = stagingPath.substr(0,stagingPath.length-4) + 'css';
+							$('#minify').addClass('hidden');	
+							$('#sass').addClass('hidden');	
+							$('#less')[0].innerText = 'Publish ' + minFileName;
+							$('#less').removeClass('btn-danger hidden').addClass('btn-success');		
+							$('#less').prop('disabled',false);
+							break;
+							default:
+							fileType = null;
+							minFileName = null;
+							minFilePath = null;
+							$('#minify')[0].innerText = 'Cannot minify ' + extension.toUpperCase() + ' files';
+							$('#minify').prop('disabled',true);
+							$('#sass')[0].innerText = 'Not a SASS file';
+							$('#sass').prop('disabled',true);
+						}
+				}); // oucGetCurrentFileInfo.then()
+				} // function updateMinifyButton()
+
+				updateMinifyButton();
+
+				$(gadget).on({
+					'view_changed': function (evt, notification) {
+						updateMinifyButton();
+					}
+				});
+
+			}); // gadget.ready()
+});
+</script>
+</body>
+</html>
