@@ -9,7 +9,8 @@
     "dev":  "nodemon ./bin/www"
   },
   "engines": {
-    "node": "5.4.0"
+    "node": "5.4.0",
+    "npm": "3.3.12"
   },
   "dependencies": {
     "body-parser": "^1.13.3",
