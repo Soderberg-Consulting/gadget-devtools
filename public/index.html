@@ -108,15 +108,15 @@
 									url: apiHost + '/files/upload?site='+gadget.get('site')+'&path='+folderPath+'&overwrite=true&target='+gadget.get('site') + '&authorization_token=' + gadget.get('token'),
 									data: fd
 								}).done(function(results){
-									$('#minify')[0].innerText = 'Success!';
+									$('#minify')[0].textContent = 'Success!';
 									$('#minify').prop('disabled', true);
 									window.setTimeout(function(){
-										$('#minify')[0].innerText = 'Publish ' + minFileName;
+										$('#minify')[0].textContent = 'Publish ' + minFileName;
 										$('#minify').prop('disabled', false);
 									},5000);
 								}).fail(function(error){
 									console.log('Error uploading minified file to production:', error);
-									$('#minify')[0].innerText = 'Error!';
+									$('#minify')[0].textContent = 'Error!';
 									$('#minify').prop('disabled', true);
 									$('#minify').removeClass('btn-success').addClass('btn-danger');		
 								});
@@ -151,15 +151,15 @@
 									url: apiHost + '/files/upload?site='+gadget.get('site')+'&path='+folderPath+'&overwrite=true&target='+gadget.get('site') + '&authorization_token=' + gadget.get('token'),
 									data: fd
 								}).done(function(results){
-									$('#sass')[0].innerText = 'Success!';
+									$('#sass')[0].textContent = 'Success!';
 									$('#sass').prop('disabled', true);
 									window.setTimeout(function(){
-										$('#sass')[0].innerText = 'Publish ' + minFileName;
+										$('#sass')[0].textContent = 'Publish ' + minFileName;
 										$('#sass').prop('disabled', false);
 									},5000);
 								}).fail(function(error){
 									console.log('Error uploading compiled css file to production:', error);
-									$('#sass')[0].innerText = 'Error!';
+									$('#sass')[0].textContent = 'Error!';
 									$('#sass').prop('disabled', true);
 									$('#sass').removeClass('btn-success').addClass('btn-danger');		
 								});
@@ -194,15 +194,15 @@
 									url: apiHost + '/files/upload?site='+gadget.get('site')+'&path='+folderPath+'&overwrite=true&target='+gadget.get('site') + '&authorization_token=' + gadget.get('token'),
 									data: fd
 								}).done(function(results){
-									$('#less')[0].innerText = 'Success!';
+									$('#less')[0].textContent = 'Success!';
 									$('#less').prop('disabled', true);
 									window.setTimeout(function(){
-										$('#less')[0].innerText = 'Publish ' + minFileName;
+										$('#less')[0].textContent = 'Publish ' + minFileName;
 										$('#less').prop('disabled', false);
 									},5000);
 								}).fail(function(error){
 									console.log('Error uploading compiled css file to production:', error);
-									$('#less')[0].innerText = 'Error!';
+									$('#less')[0].textContent = 'Error!';
 									$('#less').prop('disabled', true);
 									$('#less').removeClass('btn-success').addClass('btn-danger');		
 								});
@@ -223,7 +223,7 @@
 							minFilePath = stagingPath.substr(0,stagingPath.length-3) + 'min.css';
 							$('#sass').addClass('hidden');	
 							$('#less').addClass('hidden');	
-							$('#minify')[0].innerText = 'Publish ' + minFileName;
+							$('#minify')[0].textContent = 'Publish ' + minFileName;
 							$('#minify').removeClass('btn-danger hidden').addClass('btn-success');		
 							$('#minify').prop('disabled',false);
 							break;
@@ -233,7 +233,7 @@
 							minFilePath = stagingPath.substr(0,stagingPath.length-2) + 'min.js';
 							$('#sass').addClass('hidden');	
 							$('#less').addClass('hidden');	
-							$('#minify')[0].innerText = 'Publish ' + minFileName;
+							$('#minify')[0].textContent = 'Publish ' + minFileName;
 							$('#minify').removeClass('btn-danger hidden').addClass('btn-success');		
 							$('#minify').prop('disabled',false);
 							break;
@@ -242,7 +242,7 @@
 							minFilePath = stagingPath.substr(0,stagingPath.length-4) + 'css';
 							$('#minify').addClass('hidden');	
 							$('#less').addClass('hidden');	
-							$('#sass')[0].innerText = 'Publish ' + minFileName;
+							$('#sass')[0].textContent = 'Publish ' + minFileName;
 							$('#sass').removeClass('btn-danger hidden').addClass('btn-success');		
 							$('#sass').prop('disabled',false);
 							break;
@@ -251,7 +251,7 @@
 							minFilePath = stagingPath.substr(0,stagingPath.length-4) + 'css';
 							$('#minify').addClass('hidden');	
 							$('#sass').addClass('hidden');	
-							$('#less')[0].innerText = 'Publish ' + minFileName;
+							$('#less')[0].textContent = 'Publish ' + minFileName;
 							$('#less').removeClass('btn-danger hidden').addClass('btn-success');		
 							$('#less').prop('disabled',false);
 							break;
@@ -259,9 +259,9 @@
 							fileType = null;
 							minFileName = null;
 							minFilePath = null;
-							$('#minify')[0].innerText = 'Cannot minify ' + extension.toUpperCase() + ' files';
+							$('#minify')[0].textContent = 'Cannot minify ' + extension.toUpperCase() + ' files';
 							$('#minify').prop('disabled',true);
-							$('#sass')[0].innerText = 'Not a SASS file';
+							$('#sass')[0].textContent = 'Not a SASS file';
 							$('#sass').prop('disabled',true);
 						}
 				}); // oucGetCurrentFileInfo.then()
