@@ -99,7 +99,7 @@
 							}).done(function(minified){
 								var folderPath = minFilePath.substr(0,minFilePath.length - minFileName.length - 1);
 								var fd = new FormData();
-								var file = new File([minified], minFileName);
+								var file = new Blob([minified], { type: "text/plain" });
 								fd.append(minFileName, file);
 								$.ajax({
 									method: 'POST',
@@ -142,7 +142,7 @@
 							}).done(function(sassed){
 								var folderPath = minFilePath.substr(0,minFilePath.length - minFileName.length - 1);
 								var fd = new FormData();
-								var file = new File([sassed], minFileName);
+								var file = new Blob([sassed], { type: "text/plain" });
 								fd.append(minFileName, file);
 								$.ajax({
 									method: 'POST',
@@ -185,7 +185,7 @@
 							}).done(function(sassed){
 								var folderPath = minFilePath.substr(0,minFilePath.length - minFileName.length - 1);
 								var fd = new FormData();
-								var file = new File([sassed], minFileName);
+								var file = new Blob([sassed], { type: "text/plain" });
 								fd.append(minFileName, file);
 								$.ajax({
 									method: 'POST',
