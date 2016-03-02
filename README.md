@@ -7,7 +7,7 @@ An [OU Campus](https://omniupdate.com/products/oucampus) gadget designed for web
 - Compile SCSS
 - Compile LESS
 
-**Note:** Only Chrome/Chromium and Firefox are supported right now. Support for more browsers coming soon.
+Works in all modern browsers.
 
 ## OU Campus Installation
 Follow the OU Campus [gadget installation instructions](http://support.omniupdate.com/oucampus10/setup/gadgets/new-gadget.html) to install this gadget. When prompted for the gadget URL, enter `https://devtools.gadget.host`
