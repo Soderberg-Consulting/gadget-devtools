@@ -10,7 +10,7 @@ An [OU Campus](https://omniupdate.com/products/oucampus) gadget designed for web
 Works in all modern browsers.
 
 ## OU Campus Installation
-Follow the OU Campus [gadget installation instructions](http://support.omniupdate.com/oucampus10/setup/gadgets/new-gadget.html) to install this gadget. When prompted for the gadget URL, enter `https://devtools.gadget.host`
+Follow the OU Campus [gadget installation instructions](http://support.omniupdate.com/oucampus10/setup/gadgets/new-gadget.html) to install this gadget. When prompted for the gadget URL, enter `https://devtools.gadget.host/`
 
 ## Installing and running locally
 This gadget requires a NodeJS back-end to handle the core functionality. To install, run
