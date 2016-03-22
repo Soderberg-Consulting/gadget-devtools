@@ -12,6 +12,18 @@ Works in all modern browsers.
 ## OU Campus Installation
 Follow the OU Campus [gadget installation instructions](http://support.omniupdate.com/oucampus10/setup/gadgets/new-gadget.html) to install this gadget. When prompted for the gadget URL, enter `https://devtools.gadget.host/`
 
+### Troubleshooting
+If you are running an ESL/self-hosted version of OU Campus (i.e., your OU Campus server domain is something other than _omniupdate.com_), then you will likely encounter a certificate error when trying to install this gadget.
+
+To resolve this, your server administrator will need to add the [Let's Encrypt intermediate certificate(s)](https://letsencrypt.org/certificates/) to your Java keystore (you'll need to install at least the Let’s Encrypt Authority X1 certificate, but it's probably best to install X2 as well).
+
+To add the certificates, just use the Java keytool app:
+```
+keytool -import -trustcacerts -keystore /path/to/oucampus/keystore -alias letsencryptX1 -file /path/to/lets-encrypt-x1-cross-signed.pem
+
+keytool -import -trustcacerts -keystore /path/to/oucampus/keystore -alias letsencryptX2 -file /path/to/lets-encrypt-x2-cross-signed.pem
+```
+
 ## Installing and running locally
 This gadget requires a NodeJS back-end to handle the core functionality. To install, run
 ```
