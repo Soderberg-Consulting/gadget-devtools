@@ -5,13 +5,13 @@
     <entry key="title" label="Title">Developer Tools</entry>
     
     <!-- The URL of an icon image. -->
-    <entry key="icon" private="true">https://devtools.gadget.host/favicon.ico</entry>
+    <entry key="icon" private="true">https://gadget.devtools.host/favicon.ico</entry>
     
     <!-- The description that appears in the gadget chooser. -->
     <entry key="description" private="true">Provides useful tools for web developers. Currently supports minification of CSS/JavaScript and CSS pre-processing of SASS and LESS.</entry>
     
     <!-- The URL of a thumbnail image to appear in the gadget chooser. -->
-    <entry key="thumbnail" private="true">https://devtools.gadget.host/images/thumbnail.png</entry>
+    <entry key="thumbnail" private="true">https://gadget.devtools.host/images/thumbnail.png</entry>
     
     <!-- Current supported types are "dashboard" and "sidebar". If you want your gadget to appear
          in both places, enter "dashboard, sidebar". -->
